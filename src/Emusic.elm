@@ -1,4 +1,28 @@
-module Main exposing (Instrument(..), MAction(..), MPattern(..), Song(..), SongData, Track(..), TrackObject, sendData)
+module Emusic exposing
+    ( Instrument(..), MAction(..), MPattern(..), Song(..), Track(..)
+    , play
+    , repeat
+    )
+
+{-| DSL that implements the music patterns and functions to make it easy
+to write music and parse its structures to send to browser.
+
+
+# Custom types
+
+@docs Instrument, MAction, MPattern, Song, Track
+
+
+# Play a song
+
+@docs play
+
+
+# Repeat a track
+
+@docs repeat
+
+-}
 
 
 type MAction
