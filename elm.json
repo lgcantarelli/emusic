@@ -2,7 +2,7 @@
     "name": "lgcantarelli/emusic",
     "type": "package",
     "summary": "DSL that provides abstractions to write music patterns, based on HMusic.",
-    "license": "BSD-3-Clause",
+    "license": "0BSD",
     "version": "1.0.0",
     "exposed-modules": [
         "Emusic"
