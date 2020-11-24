@@ -1,7 +1,7 @@
-module Emusic exposing
+port module Emusic exposing
     ( Instrument(..), MAction(..), MPattern(..), Song(..), Track(..)
-    , play
     , repeat
+    , Model, Msg, SongData, SongIdentifier, TrackObject, init, subscriptions, update
     )
 
 {-| DSL that implements the music patterns and functions to make it easy
@@ -23,6 +23,8 @@ to write music and parse its structures to send to browser.
 @docs repeat
 
 -}
+
+-- EMUSIC LIB
 
 
 type MAction
@@ -48,15 +50,6 @@ type Song
     = Song (List Track)
 
 
-repeat : Int -> List MAction -> List MAction
-repeat n drumActions =
-    if n <= 1 then
-        drumActions
-
-    else
-        drumActions ++ repeat (n - 1) drumActions
-
-
 type alias TrackObject =
     { instrument : Int
     , actions : List String
@@ -67,9 +60,40 @@ type alias SongData =
     List TrackObject
 
 
-play : Song -> SongData
-play song =
-    parseData song
+
+-- API
+
+
+repeat : Int -> List MAction -> List MAction
+repeat n drumActions =
+    if n <= 1 then
+        drumActions
+
+    else
+        drumActions ++ repeat (n - 1) drumActions
+
+
+
+-- DATA PROCESSORS
+
+
+play : List SongIdentifier -> SongName -> SongData
+play songIdentifiers songName =
+    parseData (findSong songIdentifiers songName)
+
+
+findSong : List SongIdentifier -> SongName -> Song
+findSong songIdentifiers songName =
+    case songIdentifiers of
+        [] ->
+            Song []
+
+        songIdentifier :: otherIdentifiers ->
+            if songIdentifier.songName == songName then
+                songIdentifier.song
+
+            else
+                findSong otherIdentifiers songName
 
 
 parseData : Song -> SongData
@@ -106,8 +130,8 @@ toStringList drumPattern =
         MPattern [] ->
             []
 
-        MPattern (dp :: dps) ->
-            [ toString dp ] ++ toStringList (MPattern dps)
+        MPattern (mp :: mps) ->
+            [ toString mp ] ++ toStringList (MPattern mps)
 
 
 toString : MAction -> String
@@ -118,3 +142,58 @@ toString drumAction =
 
         O ->
             "O"
+
+
+
+-- MODULE INTERFACE
+
+
+type alias SongName =
+    String
+
+
+type alias SongIdentifier =
+    { songName : SongName, song : Song }
+
+
+type alias Model =
+    { songs : List SongIdentifier, currentSong : SongName }
+
+
+type Msg
+    = Play SongName
+    | Stop
+
+
+
+-- API
+
+
+init : List SongIdentifier -> ( Model, Cmd Msg )
+init songIdentifiers =
+    ( Model songIdentifiers "", Cmd.none )
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        Play songName ->
+            ( { model | currentSong = songName }, sendSongData (play model.songs songName) )
+
+        Stop ->
+            ( { model | currentSong = "" }, sendSongData [ TrackObject 0 [ "" ] ] )
+
+
+
+-- PORTS
+
+
+port sendSongData : SongData -> Cmd msg
+
+
+port playSong : (SongName -> msg) -> Sub msg
+
+
+subscriptions : Model -> Sub Msg
+subscriptions songName =
+    playSong Play
