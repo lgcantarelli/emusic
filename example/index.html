@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+
+  <title>EMusic</title>
+
+  <script src="https://unpkg.com/tone"></script>
+  <script src="elm.js"></script>
+  <script src="emusic-tone-adapter.js"></script>
+
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+  <h1 class="header">
+    Player de músicas compostas programando com a EMusic
+  </h1>
+
+  <div class="content">
+    <div class="container">
+      <div class="code-sample">
+        <pre>
+          <code>
+mySong =
+  Song
+      [ Track FMSynth (MPattern (repeat 3 [ X, O, X, O, X, O, X, O ]))
+      , Track AMSynth (MPattern (repeat 3 [ O, X, O, X, O, O, O, O ]))
+      , Track MBSynth (MPattern (repeat 3 [ X, O, X, O, O, X, O, O ]))
+      ]
+          </code>
+        </pre>
+      </div>
+
+      <button id="my-song">Tocar mySong!</button>
+    </div>
+
+    <div class="container">
+      <div class="code-sample">
+        <pre>
+          <code>
+anotherSong =
+  Song
+      [ Track MBSynth (MPattern (repeat 2 [ X, X, X, O, O, X ]))
+      , Track MBSynth (MPattern (repeat 4 [ X, O, X, O, X, X ]))
+      , Track AMSynth (MPattern (repeat 4 [ O, X, O, X, O, O ]))
+      , Track FMSynth (MPattern (repeat 4 [ X, X, O, O, X, O ]))
+      ]
+          </code>
+        </pre>
+      </div>
+
+      <button id="another-song">Tocar anotherSong!</button>
+    </div>
+  </div>
+</body>
+
+<script>
+  const app = Elm.EmusicWorker.init()
+  const { playSong } = initToneAdapter(app)
+
+  const mySongButton = document.getElementById("my-song")
+  mySongButton.addEventListener("click", () => {
+    playSong("mySong")
+  })
+
+  const anotherSongButton = document.getElementById("another-song")
+  anotherSongButton.addEventListener("click", () => {
+    playSong("anotherSong")
+  })
+</script>
+
+</html>
