@@ -8,54 +8,82 @@ module Emusic exposing
 to write music and parse its structures to send to browser.
 
 
-# Custom types
+# Instrument type
+@docs Instrument
 
-@docs Instrument, MAction, MPattern, Song, Track
+# MAction type
+@docs MAction
 
+# MPattern type
+@docs MPattern
 
-# Play a song
+# Song type
+@docs Song
 
-@docs play
+# Track type
+@docs Track
 
+# SongData type
+@docs SongData
 
-# Repeat a track
+# SongIdentifier type
+@docs SongIdentifier
 
-@docs repeat
+# SongName type
+@docs SongName
 
+# TrackObject type
+@docs TrackObject
+
+# Msg type
+@docs Msg
+
+# Model type
+@docs Model
+
+# Exposed methods
+@docs init, update, repeat
 -}
 
 -- EMUSIC LIB
 
-
+{-| Music action
+-}
 type MAction
     = X
     | O
 
-
+{-| Music pattern
+-}
 type MPattern
     = MPattern (List MAction)
 
-
+{-| Intrument type
+-}
 type Instrument
     = AMSynth
     | FMSynth
     | MBSynth
 
-
+{-| Track type
+-}
 type Track
     = Track Instrument MPattern
 
-
+{-| Song type
+-}
 type Song
     = Song (List Track)
 
-
+{-| Track data to send to JS
+-}
 type alias TrackObject =
     { instrument : Int
     , actions : List String
     }
 
-
+{-| Song data to send to JS
+-}
 type alias SongData =
     List TrackObject
 
@@ -63,7 +91,8 @@ type alias SongData =
 
 -- API
 
-
+{-| Repeat action lists
+-}
 repeat : Int -> List MAction -> List MAction
 repeat n drumActions =
     if n <= 1 then
@@ -147,19 +176,23 @@ toString drumAction =
 
 -- MODULE INTERFACE
 
-
+{-| Song name type
+-}
 type alias SongName =
     String
 
-
+{-| Song identifier type
+-}
 type alias SongIdentifier =
     { songName : SongName, song : Song }
 
-
+{-| Model type
+-}
 type alias Model =
     { songs : List SongIdentifier, currentSong : SongName }
 
-
+{-| Msg type
+-}
 type Msg
     = Play SongName
     | Stop
@@ -168,12 +201,14 @@ type Msg
 
 -- API
 
-
+{-| Init program with a list of song identifiers
+-}
 init : List SongIdentifier -> ( Model, Cmd Msg )
 init songIdentifiers =
     ( Model songIdentifiers "", Cmd.none )
 
-
+{-| Update program
+-}
 update : Msg -> Model -> (SongData -> Cmd Msg) -> ( Model, Cmd Msg )
 update msg model sendSongData =
     case msg of
