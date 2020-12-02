@@ -1,4 +1,4 @@
-module EmusicWorker exposing (main)
+port module EmusicWorker exposing (main)
 
 import Emusic exposing (..)
 
@@ -28,10 +28,14 @@ registerSongs _ =
         ]
 
 
+port sendSongData : SongData -> Cmd msg
+port playSong : (SongName -> msg) -> Sub msg
+
+
 main : Program () Model Msg
 main =
     Platform.worker
         { init = registerSongs
-        , update = update
-        , subscriptions = subscriptions
+        , update = (\msg model -> update msg model sendSongData)
+        , subscriptions = \songName -> playSong Play
         }

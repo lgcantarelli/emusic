@@ -1,7 +1,7 @@
-port module Emusic exposing
+module Emusic exposing
     ( Instrument(..), MAction(..), MPattern(..), Song(..), Track(..)
     , repeat
-    , Model, Msg, SongData, SongIdentifier, TrackObject, init, subscriptions, update
+    , Model, Msg(..), SongName, SongData, SongIdentifier, TrackObject, init, update
     )
 
 {-| DSL that implements the music patterns and functions to make it easy
@@ -174,26 +174,11 @@ init songIdentifiers =
     ( Model songIdentifiers "", Cmd.none )
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update : Msg -> Model -> (SongData -> Cmd Msg) -> ( Model, Cmd Msg )
+update msg model sendSongData =
     case msg of
         Play songName ->
             ( { model | currentSong = songName }, sendSongData (play model.songs songName) )
 
         Stop ->
             ( { model | currentSong = "" }, sendSongData [ TrackObject 0 [ "" ] ] )
-
-
-
--- PORTS
-
-
-port sendSongData : SongData -> Cmd msg
-
-
-port playSong : (SongName -> msg) -> Sub msg
-
-
-subscriptions : Model -> Sub Msg
-subscriptions songName =
-    playSong Play
