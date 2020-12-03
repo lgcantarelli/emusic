@@ -16,7 +16,7 @@ anotherSong =
       [ Track MBSynth (MPattern (repeat 2 [ X, X, X, O, O, X ]))
       , Track MBSynth (MPattern (repeat 4 [ X, O, X, O, X, X ]))
       , Track AMSynth (MPattern (repeat 4 [ O, X, O, X, O, O ]))
-      , Track FMSynth (MPattern (repeat 8 [ X, X, O, O, X, O ]))
+      , Track FMSynth (MPattern (repeat 4 [ X, X, O, O, X, O ]))
       ]
 
 

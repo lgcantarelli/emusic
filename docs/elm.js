@@ -2979,7 +2979,7 @@ var author$project$EmusicWorker$anotherSong = author$project$Emusic$Song(
 			author$project$Emusic$MPattern(
 				A2(
 					author$project$Emusic$repeat,
-					8,
+					4,
 					_List_fromArray(
 						[author$project$Emusic$X, author$project$Emusic$X, author$project$Emusic$O, author$project$Emusic$O, author$project$Emusic$X, author$project$Emusic$O]))))
 		]));
